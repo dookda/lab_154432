@@ -148,6 +148,18 @@ widget.pack(side=tk.LEFT, padx=5, pady=5)
 ```python
 widget.grid(row=0, column=0, padx=5, pady=5)
 ```
+- ตัวอย่าง
+
+```python
+label1 = tk.Label(root, text="Label 1")
+label2 = tk.Label(root, text="Label 2")
+button = tk.Button(root, text="A Button")
+
+# จัดวางวิดเจ็ตบนตาราง 2 แถว 2 คอลัมน์ (row=0,1 / column=0,1)
+label1.grid(row=0, column=0, padx=10, pady=10)
+label2.grid(row=0, column=1, padx=10, pady=10)
+button.grid(row=1, column=0, columnspan=2, pady=10)
+```
 **Option ที่ใช้บ่อย**  
 - `rowspan` / `columnspan` : ควบรวมหลายแถวหรือหลายคอลัมน์  
 - `sticky` : กำหนดตำแหน่งใน cell เช่น `tk.W`, `tk.E`, `tk.N`, `tk.S`
