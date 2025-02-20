@@ -18,11 +18,14 @@ pip install ultralytics
 ### 3. ดาวโหลดโมเดล และทดลองใช้งาน
 
 ดาวโหลดโมเดลจาก [text](https://github.com/ultralytics/ultralytics)
-
+yolo ถูกฝึกกับ dataset ของ COCO ดูรายละเอียดจากที่นี่ [text](https://github.com/ultralytics/ultralytics/blob/main/ultralytics/cfg/datasets/coco.yaml)
+เราสามารถใช้ yolo pretrain กับข้อมูลของเรา ดังนี้ 
 ```bash
 yolo predict model=yolo11n.pt source='https://ultralytics.com/images/bus.jpg' 
 yolo predict model=yolo11n.pt source='https://ultralytics.com/images/bus.jpg' project=test classes=5  
 ```
+
+โดยสามารถดู configulation ได้ที่ [text](https://docs.ultralytics.com/usage/cfg/)
 
 ### 4. ใช้ python ในการแสดงผล
 
