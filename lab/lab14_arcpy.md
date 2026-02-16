@@ -177,6 +177,12 @@ class AutoInterpolation():
         arcpy.env.workspace = path
         return self
 
+    def convertToUTM(self, in_shp):
+        out_shp = "converted.shp"
+        arcpy.Project_management(in_shp, out_shp, 32647)
+        self.in_shp = out_shp
+        return self
+
     def addLayer(self, path):
         self.in_shp = path
         return self
