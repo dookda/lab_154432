@@ -230,6 +230,6 @@ interpolator = AutoInterpolation()
 interpolator.setWorkspace("path/to/workspace") \
     .addLayer("path/to/pointdata.shp") \
     .listField() \
-    .idwAuto("field1", "field2", "field3") \
+    .idwAuto() \
     .sumRaster()
 ```
