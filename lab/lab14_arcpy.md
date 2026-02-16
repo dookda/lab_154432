@@ -26,6 +26,13 @@ class ListData:
         arcpy.AddMessage(self.list)
 ```
 
+การใช้งานคลาส `ListData` สามารถทำได้ดังนี้
+
+```python
+list_data = ListData()
+list_data.setWorkspace("path/to/your/workspace").listFeature()
+```
+
 ---
 
 ### Exercise 2: การตรวจสอบข้อมูลเชิงลึกของชั้นข้อมูล (Describe Feature Class)
@@ -62,6 +69,13 @@ class Describe:
         for f in fields:
             print(f.name)
         return self
+```
+
+การใช้งานคลาส `Describe` สามารถทำได้ดังนี้
+
+```python
+desc = Describe()
+desc.setData("path/to/your/featureclass.shp").listFields()
 ```
 
 ---
@@ -123,6 +137,18 @@ class ClipLuByBuffer:
         return self
 ```
 
+การใช้งานคลาส `ClipLuByBuffer` สามารถทำได้ดังนี้
+
+```python
+clipper = ClipLuByBuffer()
+clipper.set_workspace("path/to/workspace") \
+    .set_input("path/to/input.shp") \
+    .set_lu("path/to/landuse.shp") \
+    .set_srid_32647() \
+    .buffer_shp(distance=100) \
+    .clip_lu()
+```
+
 ---
 
 ### Exercise 4: การหาผลรวมปริมาณน้ำฝนอัตโนมัติ (Automatic Interpolation)
@@ -181,4 +207,15 @@ class AutoInterpolation():
             "SINGLE_BAND")
         outSum.save("sumrester")
         return self
+```
+
+การใช้งานคลาส `AutoInterpolation` สามารถทำได้ดังนี้
+
+```python
+interpolator = AutoInterpolation()
+interpolator.setWorkspace("path/to/workspace") \
+    .addLayer("path/to/pointdata.shp") \
+    .listField() \
+    .idwAuto("field1", "field2", "field3") \
+    .sumRaster()
 ```
