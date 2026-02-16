@@ -13,6 +13,7 @@ pip install folium
 pip install scikit-learn
 ```
 
+## บทปฏิบัติการ 15: land use change analysis with Google Earth Engine
 ### 1. สร้าง class สำหรับดาวโหลดข้อมูลภาพ
  
 สร้าง class ชื่อ Sentinel2TiledDownloader โดยให้มีเมธอด ดังนี้
