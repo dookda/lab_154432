@@ -176,6 +176,12 @@ class AutoInterpolation():
         self.workspace = path
         arcpy.env.workspace = path
         return self
+    
+    def checkSRID(self, in_shp):
+        fc = arcpy.Describe(in_shp)
+        self.srid = fc.spatialReference.name
+        arcpy.AddMessage(f"SRID: {self.srid}")
+        return self
 
     def convertToUTM(self, in_shp):
         out_shp = "converted.shp"
@@ -200,12 +206,14 @@ class AutoInterpolation():
         idw.save(field)
         return self
 
-    def idwAuto(self, *args):
-        for field in args:
-            self.rasters.append(field)
-            idw = arcpy.sa.Idw(in_point_features=self.in_shp, z_field=field,
+    def idwAuto(self):
+        wk = 52
+        for field in range(1, wk+1):
+            field_name = f"WK_{field}"
+            self.rasters.append(field_name)
+            idw = arcpy.sa.Idw(in_point_features=self.in_shp, z_field=field_name,
                 cell_size=100, power=2)
-            idw.save(field)
+            idw.save(field_name)
         return self
 
     def sumRaster(self):
