@@ -183,8 +183,7 @@ class AutoInterpolation():
         arcpy.AddMessage(f"SRID: {self.srid}")
         return self
 
-    def convertToUTM(self, in_shp):
-        out_shp = "converted.shp"
+    def convertToUTM(self, in_shp, out_shp):
         arcpy.Project_management(in_shp, out_shp, 32647)
         self.in_shp = out_shp
         return self
