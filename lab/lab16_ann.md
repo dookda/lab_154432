@@ -2,6 +2,8 @@
 
 ใช้ ANN (Artificial Neural Network) กับชุดข้อมูล Iris เพื่อจำแนกพันธุ์ดอกไม้ 3 ชนิดจากขนาด sepal และ petal
 
+
+
 ---
 
 ### 1. ติดตั้งไลบรารี
@@ -13,6 +15,10 @@
 ---
 
 ### 2. โหลดข้อมูล Iris Dataset
+
+ชุดข้อมูล Iris ประกอบด้วย 4 features ได้แก่ sepal length, sepal width, petal length, petal width และ 3 class คือ Setosa, Versicolour, Virginica
+
+![Iris Dataset](https://miro.medium.com/1*tBoDc9HFTPyaIW3_ksZSHQ.png)
 
 โหลดชุดข้อมูล Iris จาก scikit-learn แล้วสร้าง DataFrame เพื่อดูข้อมูล
 
