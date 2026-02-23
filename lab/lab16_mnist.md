@@ -2,6 +2,29 @@
 
 ใช้ ANN กับชุดข้อมูล MNIST เพื่อจำแนกตัวเลข 0-9 จากภาพขนาด 28x28 pixels
 
+**MNIST (Modified National Institute of Standards and Technology)** คือชุดข้อมูลมาตรฐานสำหรับการทดสอบ Machine Learning โดยเฉพาะงาน Image Classification ประกอบด้วย:
+- รูปภาพตัวเลขเขียนมือ (handwritten digits) ทั้งหมด **70,000 ภาพ**
+- แบ่งเป็น **Training set 60,000 ภาพ** และ **Test set 10,000 ภาพ**
+- แต่ละภาพมีขนาด **28×28 pixels** เป็นภาพ grayscale (ขาวดำ)
+- มี **10 คลาส** คือตัวเลข 0 ถึง 9
+
+![MNIST Dataset](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgEbB8Ghh50mY9gmeAW56PmIC9wzVGoC2jbA&s)
+
+### ประวัติของ MNIST
+
+MNIST ถูกสร้างขึ้นในปี **ค.ศ. 1998** โดย **Yann LeCun, Corinna Cortes และ Christopher Burges** จาก AT&T Bell Labs และ NIST (National Institute of Standards and Technology) โดยมีจุดประสงค์เพื่อเป็น benchmark มาตรฐานสำหรับงาน handwritten digit recognition
+
+**ที่มาของข้อมูล:**
+- ดัดแปลงมาจากชุดข้อมูล NIST ดั้งเดิม 2 ชุด ได้แก่ Special Database 1 (SD-1) และ Special Database 3 (SD-3)
+- SD-1 เก็บจากนักเรียนมัธยมปลาย ส่วน SD-3 เก็บจากพนักงาน Census Bureau ของสหรัฐอเมริกา
+- นำมา normalize และ center ให้อยู่ในกรอบ 28×28 pixels
+
+**ความสำคัญและอิทธิพล:**
+- **1998** — Yann LeCun ใช้ MNIST ในการพัฒนา **LeNet-5** ซึ่งเป็น Convolutional Neural Network (CNN) แบบแรก ๆ ที่ประสบความสำเร็จ
+- **2000s** — กลายเป็น benchmark มาตรฐานที่นักวิจัย ML ทั่วโลกใช้เปรียบเทียบประสิทธิภาพโมเดล
+- **2012** — การเติบโตของ Deep Learning ทำให้โมเดลสามารถทำ accuracy ได้สูงกว่า 99%
+- **ปัจจุบัน** — ยังคงเป็นชุดข้อมูลแรกที่นักเรียน ML มักเริ่มต้นเรียนรู้ มักถูกเรียกว่า "Hello World of Machine Learning"
+
 ---
 
 ### 1. ติดตั้งและนำเข้าไลบรารี
@@ -62,6 +85,20 @@ y_test = to_categorical(y_test, num_classes)
 ---
 
 ### 5. สร้างโมเดล ANN
+
+```
+Input          Flatten       Hidden Layer 1   Dropout   Hidden Layer 2   Dropout   Softmax   Output Layer
+(28x28)        (784 nodes)   (256 nodes)      (0.4)     (128 nodes)      (0.3)               (10 nodes)
+
+┌───────┐                    ┌─ O ─┐                    ┌─ O ─┐                              ┌─ O  "0"
+│PixelO │                    │  O  │                    │  O  │                              │
+│PixelO │                    │  O  │                    │  O  │                              │
+│PixelO │   ───Flatten───    │  .  │   ──Dropout──      │  .  │   ──Dropout──   Softmax ────┤─ O  "1-8"
+│  ...  │   (28x28→784)      │  .  │      (0.4)         │  .  │      (0.3)                  │
+│PixelO │                    │  O  │                    │  O  │                              │
+└───────┘                    └─ O ─┘                    └─ O ─┘                              └─ O  "9"
+                             (ReLU)                     (ReLU)
+```
 
 ```python
 model = Sequential()
