@@ -35,6 +35,17 @@ print(iris_df.head(5))
 print(iris_df.describe())
 ```
 
+คำอธิบายของข้อมูล:
+- sepal length (cm): ความยาวของ sepal เป็นเซนติเมตร
+- sepal width (cm): ความกว้างของ sepal เป็นเซนติเมตร
+- petal length (cm): ความยาวของ petal เป็นเซนติเมตร
+- petal width (cm): ความกว้างของ petal เป็นเซนติเมตร
+- target: หมายเลขของชนิดดอกไม้ (0 = Setosa, 1 = Versicolour, 2 = Virginica)
+
+```python
+print(iris.target_names)
+```
+
 ---
 
 ### 3. แยกข้อมูล Features และ Target
@@ -71,6 +82,20 @@ X_test = scaler.transform(X_test)
 ### 5. สร้างโมเดล ANN
 
 สร้างโมเดลแบบ Sequential ประกอบด้วย Hidden Layer 2 ชั้น (8 neurons, activation='relu') และ Output Layer (softmax)
+
+```
+Input Layer      Hidden Layer 1    Hidden Layer 2    Softmax    Output Layer
+(4 nodes)        (8 nodes, ReLU)   (8 nodes, ReLU)             (3 nodes)
+
+sepal_length ─┐  ┌─ O ─┐          ┌─ O ─┐          ┌───────   ─── O → Setosa
+              │  │  O  │          │  O  │          │
+sepal_width  ─┼──┤  O  ├──(ReLU)──┤  O  ├─(ReLU)──┤ Softmax  ─── O → Versicolour
+              │  │  O  │          │  O  │          │
+petal_length ─┼──┤  O  ├          ┤  O  ├          └───────   ─── O → Virginica
+              │  │  O  │          │  O  │
+petal_width  ─┘  │  O  │          │  O  │
+                 └─ O ─┘          └─ O ─┘
+```
 
 ```python
 from tensorflow.keras.models import Sequential
