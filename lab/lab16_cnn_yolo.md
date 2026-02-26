@@ -241,19 +241,27 @@ pip install flask ultralytics opencv-python numpy
 ### 3.1 โครงสร้างหลัก
 
 ```python
-import cv2, numpy as np
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
 from ultralytics import YOLO
 from flask import Flask, request, jsonify, send_file
-import io, threading
+import io
+import threading
 from datetime import datetime
 
 app = Flask(__name__)
 
-latest_image = None       # เก็บ JPEG bytes ล่าสุด
-latest_timestamp = None   # เวลาที่รับภาพ
+latest_image: bytes | None = None
+latest_timestamp: str | None = None
 lock = threading.Lock()   # ป้องกัน race condition
 
 model = YOLO("yolo11n.pt")  # โหลด YOLO model ตอนเริ่ม Server
+
+@app.route("/hello", methods=["GET"])
+def hello():
+    txt = "hello"
+    return jsonify({"data": txt})
 ```
 
 ### 3.2 API Endpoints
@@ -271,16 +279,21 @@ model = YOLO("yolo11n.pt")  # โหลด YOLO model ตอนเริ่ม S
 ```python
 @app.route("/upload", methods=["POST"])
 def upload():
+    global latest_image, latest_timestamp
+
     if request.content_type != "image/jpeg":
         return jsonify({"error": "Expected image/jpeg"}), 400
 
-    data = request.get_data()  # รับ raw bytes
+    data = request.get_data()
+    if not data:
+        return jsonify({"error": "No image data received"}), 400
 
     with lock:
         latest_image = data
         latest_timestamp = datetime.now().isoformat()
 
-    return jsonify({"status": "ok", "size": len(data)})
+    print(f"[{latest_timestamp}] Received image: {len(data)} bytes")
+    return jsonify({"status": "ok", "size": len(data), "timestamp": latest_timestamp})
 ```
 
 ### 3.4 ดึงภาพล่าสุด (ไม่มี YOLO)
@@ -311,55 +324,33 @@ def get_image():
 @app.route("/image_yolo", methods=["GET"])
 def get_image_yolo():
     with lock:
+        if latest_image is None:
+            return jsonify({"error": "No image available yet"}), 404
         image_copy = latest_image
 
-    # แปลง bytes → numpy array → ประมวลผลด้วย OpenCV
-    img_array = cv2.imdecode(np.frombuffer(image_copy, np.uint8), cv2.IMREAD_COLOR)
-
-    results = model.predict(source=img_array, classes=[0])  # ตรวจจับเฉพาะคน
+    img_array = cv2.imdecode(np.frombuffer(
+        image_copy, np.uint8), cv2.IMREAD_COLOR)
+    results = model.predict(source=img_array, classes=[0])
 
     for result in results:
-        annotated_img = result.plot()          # วาด Bounding Box
+        annotated_img = result.plot()
         _, buffer = cv2.imencode('.jpg', annotated_img)
         return send_file(
             io.BytesIO(buffer.tobytes()),
-            mimetype="image/jpeg"
+            mimetype="image/jpeg",
+            as_attachment=False,
+            download_name="annotated.jpg",
         )
 ```
 
----
+เรียกใช้ Flask API
 
-## ส่วนที่ 4: วิธีรันระบบ
+```python
 
-### ขั้นตอนที่ 1: รัน Flask Server
-
-```bash
-python esp32_server.py
-```
-
-Server จะเริ่มที่ `http://0.0.0.0:8000`
-
-### ขั้นตอนที่ 2: ทดสอบ API
-
-```bash
-# ทดสอบ Server
-curl http://localhost:8000/hello
-
-# ดูสถานะภาพล่าสุด
-curl http://localhost:8000/status
-
-# ดูภาพล่าสุด (ไม่มี YOLO)
-open http://localhost:8000/image
-
-# ดูภาพพร้อม YOLO Detection
-open http://localhost:8000/image_yolo
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000, debug=True)
 ```
 
 ---
 
-## ข้อควรระวัง
 
-- **Port 6000** ถูก Chrome บล็อก ให้ใช้ port อื่น เช่น `8000`, `5000`, `8080`
-- **`debug=True`** ไม่ควรใช้ใน production เพราะเปิด Werkzeug debugger
-- ภาพถูกเก็บใน **หน่วยความจำ** เท่านั้น หากต้องการบันทึกให้เพิ่มโค้ดเซฟไฟล์ใน `/upload`
-- YOLO model `yolo11n.pt` จะถูก **ดาวน์โหลดอัตโนมัติ** ครั้งแรกที่รัน
