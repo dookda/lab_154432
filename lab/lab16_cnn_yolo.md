@@ -37,7 +37,21 @@ https://arduino.esp8266.com/stable/package_esp8266com_index.json,https://dl.espr
 3. ไปที่ **Tools > Port** แล้วดูว่ามีพอร์ตไหนขึ้นมา  เช่น `COM3` บน Windows หรือ `/dev/ttyUSB0` บน Linux/Mac   
 
 
-### 1.1 โค้ดทั้งหมด
+### 1.1 ตัวอย่างโค้ดอย่างง่าย print hello ทุก 5 วินาที
+
+```cpp
+void setup() {
+  Serial.begin(115200);
+  Serial.println("Hello from ESP32-CAM!");
+}
+
+void loop() {
+  Serial.println("Hello every 5 seconds");
+  delay(5000);
+}
+```
+
+### 1.2 โค้ดทั้งหมด
 
 ```cpp
 #include <dummy.h>
@@ -48,7 +62,7 @@ https://arduino.esp8266.com/stable/package_esp8266com_index.json,https://dl.espr
 
 // แทนที่ด้วยข้อมูล Wi-Fi
 const char *ssid = "Sakda";
-const char *password = "xxxxx";
+const char *password = "xxxxxxxx";
 
 const char *serverName = "http://172.20.10.3:8000/upload";
 
